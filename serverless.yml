@@ -5,6 +5,7 @@ service:
 # Plugins
 plugins:
   - serverless-webpack
+  - serverless-api-gateway-caching
 
 # Provider
 provider:
@@ -41,6 +42,12 @@ custom:
   stages:
     - testnet
     - mainnet
+  # Enable or disable caching globally
+  apiGatewayCaching:
+    enabled: true
+    clusterSize: '0.5' # defaults to '0.5'
+    ttlInSeconds: 60 # defaults to the maximum allowed: 3600
+    dataEncrypted: false # defaults to false
   # AWS KMS Key ID.
   awsKmsKeyId:
     testnet: "/tezos/testnet-kms-key-id"
@@ -85,6 +92,9 @@ functions:
       - http:
           method: get
           path: oracle
+          caching:
+            enabled: true
+            ttlInSeconds: 60
           
   revoke:
     handler: handler.revoke

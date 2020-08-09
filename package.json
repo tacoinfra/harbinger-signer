@@ -29,6 +29,7 @@
     "conseiljs": "^5.0.3",
     "promise-retry": "^2.0.1",
     "serverless": "^1.78.1",
+    "serverless-api-gateway-caching": "^1.4.1",
     "serverless-webpack": "^5.3.3",
     "ts-loader": "^8.0.2",
     "web-request": "^1.0.7",
