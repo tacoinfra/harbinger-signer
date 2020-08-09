@@ -124,7 +124,7 @@ In order to setup the Serverless application, you'll need to perform the followi
         }
  ```
 
- **Important Note:** You must replace the 3 sections of the JSON in each statement that have `{{}}` (double curly braces) surrounding them with the appropriate information. This string should also have no spaces in it.
+ **Important Note:** You must replace the 3 sections of the JSON in each statement that have `{{ }}` (double curly braces) surrounding them with the appropriate information. This string should also have no spaces in it.
   * **AWS Account ID** - This is your 12-digit numeric AWS account ID
   * **Testnet/Mainnet** - This is the string `testnet` or `mainnet` (all lower case) depending on what you are deploying
   * **Region** - This is the AWS region you are deploying to, such as `eu-west-1`
