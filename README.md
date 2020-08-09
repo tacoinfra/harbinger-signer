@@ -133,9 +133,9 @@ In order to setup the Serverless application, you'll need to perform the followi
 
 ## Determining the Tezos address of the KMS key used to generate signatures
 
-Congratulations, you've just deployed a Serverless application that will automatically sign Coinbase Pro or Binance prices for the markets/order books you choose. Here is how to determine the Tezos address or public key hash (`tz2...`) of the private key that is used to sign the prices:
+Congratulations, you've just deployed a Serverless application that will automatically sign Coinbase Pro or Binance prices for the markets/order books you choose. Here is how to determine the Tezos public key (`sppk...`) for the private key that is used to sign the prices:
 
- 1. Curl the `info` endpoint that is displayed when you ran the last step (`sls deploy`) and it should output the `tz2...` address. You will need to include an `x-api-key` header that is set to the API key that was output by the previous `sls deploy` command. Here is the full command:
+ 1. Curl the `info` endpoint that is displayed when you ran the last step (`sls deploy`) and it should output the `sppk...` address. You will need to include an `x-api-key` header that is set to the API key that was output by the previous `sls deploy` command. Here is the full command:
  ```
  curl --silent -H 'x-api-key: {{ your API key }}' https://{{ your API gateway }}.execute-api.eu-west-1.amazonaws.com/testnet/info
  ```
