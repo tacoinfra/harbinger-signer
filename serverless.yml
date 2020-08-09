@@ -1,0 +1,102 @@
+# Serverless Config
+service:
+  name: harbinger-signer
+
+# Plugins
+plugins:
+  - serverless-webpack
+
+# Provider
+provider:
+  name: aws
+  runtime: nodejs12.x
+  apiKeys:
+    - ${opt:stage,'testnet'}
+
+  stage: ${opt:stage,'testnet'}
+  region: eu-west-1
+
+  # Environment Variables
+  environment:
+    # Credentials to access the AWS KMS service.
+    AWS_KMS_KEY_ID: ${ssm:${self:custom.awsKmsKeyId.${self:provider.stage}}~true}
+    AWS_KMS_KEY_REGION: ${self:custom.awsKmsKeyRegion.${self:provider.stage}}
+
+    # Assets to serve in the feed.
+    ASSETS: ${self:custom.assets.${self:provider.stage}}
+
+    # The service which provides candles.
+    # This value must be either "COINBASE" or "BINANCE". See the README for information about
+    # how to wire custom feed providers.
+    # TODO(keefertaylor): Provide this documentation.
+    CANDLE_PROVIDER:  ${self:custom.candleProvider.${self:provider.stage}}
+
+    # Only used if CANDLE_PROVIDER is "COINBASE"
+    COINBASE_API_KEY_ID: ${ssm:${self:custom.coinbaseApiKeyId.${self:provider.stage}}~true}
+    COINBASE_API_KEY_SECRET: ${ssm:${self:custom.coinbaseApiKeySecret.${self:provider.stage}}~true}
+    COINBASE_API_KEY_PASSPHRASE: ${ssm:${self:custom.coinbaseApiKeyPassphrase.${self:provider.stage}}~true}
+
+# Custom Variables
+custom:
+  stages:
+    - testnet
+    - mainnet
+  # AWS KMS Key ID.
+  awsKmsKeyId:
+    testnet: "/tezos/testnet-kms-key-id"
+    mainnet: "/tezos/mainnet-kms-key-id"
+  # AWS Region where AWS KMS Key is located.
+  awsKmsKeyRegion:
+    testnet: "eu-west-1"
+    mainnet: "eu-west-1"
+  # Assets to update.
+  assets:        
+    testnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
+    mainnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
+  # The service which provides candles.
+  # This value must be either "COINBASE" or "BINANCE". See the README for information about
+  # how to wire custom feed providers.
+  candleProvider:
+    testnet: "COINBASE"
+    mainnet: "BINANCE"
+  # A Coinbase Pro API Key ID
+  # Only used if candleProvider is set to COINBASE.
+  coinbaseApiKeyId:
+    testnet: "/tezos/testnet-pro-api-key"
+    mainnet: "/tezos/mainnet-pro-api-key"
+  # A Coinbase Pro API Key Secret
+  # Only used if candleProvider is set to COINBASE.
+  coinbaseApiKeySecret:
+    testnet: "/tezos/testnet-pro-api-secret"
+    mainnet: "/tezos/mainnet-pro-api-secret"
+  # A Coinbase Pro API Key Passphase
+  # Only used if candleProvider is set to COINBASE.
+  coinbaseApiKeyPassphrase:
+    testnet: "/tezos/testnet-pro-api-passphrase"
+    mainnet: "/tezos/mainnet-pro-api-passphrase"
+
+# Functions
+functions:
+  oracle:
+    handler: handler.oracle
+    # Allow long timeouts since APIs may rate limit.
+    timeout: 30
+    events:
+      - http:
+          method: get
+          path: oracle
+          
+  revoke:
+    handler: handler.revoke
+    events:
+      - http:
+          method: get
+          path: revoke
+          private: true
+  getInfo:
+    handler: handler.info
+    events:
+      - http:
+          method: get
+          path: info
+          private: true
