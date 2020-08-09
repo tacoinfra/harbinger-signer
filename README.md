@@ -93,23 +93,19 @@ In order to setup the Serverless application, you'll need to perform the followi
 
  24. Create two more parameters, one named `/tezos/testnet-pro-api-passphrase` or `/tezos/mainnet-pro-api-passphrase` and the second one named `/tezos/testnet-pro-api-secret` or `/tezos/mainnet-pro-api-secret` with the values that you saved previously in steps 19 and 21. These should both be of type `SecureString` as well.
 
- 25. Create one more parameter, named `/tezos/testnet-contract-address` or `/tezos/mainnet-contract-address` of type `String` with the `KT1...` address of the storage contract that you should have already deployed. When you are done, you should have 5 total parameters that look just like this:
-
- ![Final Parameters](images/14-systems-manager.png)
-
- 26. Clone this repository to your local system, install all NPM dependencies by typing `npm i` inside the repository directory, then type `sls deploy` to deploy the application. If all goes well, you should see output similar to this. You'll want to save the two endpoints for use later.
+ 25. Clone this repository to your local system, install all NPM dependencies by typing `npm i` inside the repository directory, then type `sls deploy` to deploy the application. If all goes well, you should see output similar to this. You'll want to save the two endpoints for use later.
 
  ![Serverless Deploy](images/15-sls-deploy.png)
 
- 27. Now, navigate back to <em>**KMS**</em> in the AWS console, and click on the <em>**Customer Managed Key**</em> you created earlier to modify the key policy. Click the button that says <em>**Switch to Policy View**</em>:
+ 26. Now, navigate back to <em>**KMS**</em> in the AWS console, and click on the <em>**Customer Managed Key**</em> you created earlier to modify the key policy. Click the button that says <em>**Switch to Policy View**</em>:
 
  ![Edit Key Policy](images/16-edit-key-policy.png)
 
- 28. Now, click the button that says <em>**Edit**</em>:
+ 27. Now, click the button that says <em>**Edit**</em>:
 
  ![Edit Key Policy](images/17-edit-key-policy.png)
 
- 29. Now we'll need to modify the key policy in order to enable the IAM role that the Serverless application will execute with to use the key for signing operations. You'll need to insert an additional JSON element or section into the <em>**Statement**</em> array. The section you'll need to insert is highlighted in the screenshot below. Don't forget to separate each statement with a comma. Here is the code you'll need to insert:
+ 28. Now we'll need to modify the key policy in order to enable the IAM role that the Serverless application will execute with to use the key for signing operations. You'll need to insert an additional JSON element or section into the <em>**Statement**</em> array. The section you'll need to insert is highlighted in the screenshot below. Don't forget to separate each statement with a comma. Here is the code you'll need to insert:
 
  ```JSON
 		,
