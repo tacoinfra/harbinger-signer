@@ -4,10 +4,10 @@ import * as WebRequest from 'web-request'
 import HttpResponseCode from './http-response-code'
 import promiseRetry from 'promise-retry'
 import crypto = require('crypto')
-import { Utils } from 'tezos-oracle-lib'
+import { Utils } from '@tacoinfra/harbinger-lib'
 
 /** User agent for requests to the API. */
-const USER_AGENT = 'tezos-oracle'
+const USER_AGENT = 'harbinger-signer'
 
 /** Granularity parameter for Coinbase API. */
 const GRANULARITY_SECONDS = 60

@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import OracleService from './src/oracle-service'
-import { initOracleLib } from 'tezos-oracle-lib'
+import { initOracleLib } from '@tacoinfra/harbinger-lib'
 
 import AwsSigner from './src/aws-signer'
 import HttpResponseCode from './src/http-response-code'

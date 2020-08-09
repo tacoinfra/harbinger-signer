@@ -11,7 +11,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   apiKeys:
-    - ${opt:stage,'testnet'}
+    - ${opt:stage,'testnet'}-signer
 
   stage: ${opt:stage,'testnet'}
   region: eu-west-1

@@ -1,5 +1,5 @@
 import Signer from './signer'
-import { AwsKmsKeyStore, AwsKmsSigner, Utils } from 'tezos-oracle-lib'
+import { AwsKmsKeyStore, AwsKmsSigner, Utils } from '@tacoinfra/harbinger-lib'
 
 // TODO(keefertaylor): Centralize this.
 const SIGNATURE_WATERMARK = new Uint8Array([13, 115, 101, 19, 63]) // spsig

@@ -2,7 +2,7 @@ import CandleProvider from "./candle-provider"
 import Signer from "./signer"
 import { TezosParameterFormat } from 'conseiljs/dist/types/tezos/TezosChainTypes'
 import { TezosMessageUtils } from '../node_modules/conseiljs/dist/chain/tezos/TezosMessageUtil'
-import { Utils } from 'tezos-oracle-lib'
+import { Utils } from '@tacoinfra/harbinger-lib'
 import Candle from "./candle"
 
 /**
