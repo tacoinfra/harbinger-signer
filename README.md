@@ -11,35 +11,35 @@ This project is a reference price feed signer that demonstrates how to retrieve 
 ## Setup Instructions
 
 In order to setup the Serverless application, you'll need to perform the following setup tasks first:
-1. [Install the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) on your system.
-2. [Create an AWS access key](https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/) and configure the AWS CLI by running the `aws configure` command.
-3. Login to the AWS console with an account that has the ability to create KMS keys and SSM parameters, and grant permissions to use them. An admin role will work best.
-4. Be sure to select the correct region that you would like to deploy to. The [serverless.yml](serverless.yml) file in this repository is set to use the `eu-west-1` (Ireland) region, but you can easily edit this file and select a different region if you like. The important thing is to ensure that the region you select in the console is the same region that is specified in the Serverless configuration file.
-5. In the AWS console, select the KMS service:
+ 1. [Install the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) on your system.
+ 2. [Create an AWS access key](https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/) and configure the AWS CLI by running the `aws configure` command.
+ 3. Login to the AWS console with an account that has the ability to create KMS keys and SSM parameters, and grant permissions to use them. An admin role will work best.
+ 4. Be sure to select the correct region that you would like to deploy to. The [serverless.yml](serverless.yml) file in this repository is set to use the `eu-west-1` (Ireland) region, but you can easily edit this file and select a different region if you like. The important thing is to ensure that the region you select in the console is the same region that is specified in the Serverless configuration file.
+ 5. In the AWS console, select the KMS service:
 
-![Select the KMS service](images/1-kms-selection.png)
+ ![Select the KMS service](images/1-kms-selection.png)
 
-6. Click the "Create key" button:
+ 6. Click the "Create key" button:
 
-![Click the "Create key" button](images/2-create-key.png)
+ ![Click the "Create key" button](images/2-create-key.png)
 
-7. Select <em>**Asymmetric**</em> under Key type, then select <em>**Sign and verify**</em> under Key usage, then select <em>**ECC_SECG_P256K1**</em> under Key spec, and click the <em>**Next**</em> button:
+ 7. Select <em>**Asymmetric**</em> under Key type, then select <em>**Sign and verify**</em> under Key usage, then select <em>**ECC_SECG_P256K1**</em> under Key spec, and click the <em>**Next**</em> button:
 
-![Key configuration options](images/3-create-key.png)
+ ![Key configuration options](images/3-create-key.png)
 
-8. On the next page, input an <em>**Alias**</em> for the key and an optional <em>**Description**</em>, then click the <em>**Next**</em> button:
+ 8. On the next page, input an <em>**Alias**</em> for the key and an optional <em>**Description**</em>, then click the <em>**Next**</em> button:
 
-![Create alias and description](images/4-create-key.png)
+ ![Create alias and description](images/4-create-key.png)
 
-9. The next page is where you can define key administrators. There is no need to change any settings on this page, unless you would like to give additional IAM users or roles administrative permissions to the key. Click the <em>**Next**</em> button to continue:
+ 9. The next page is where you can define key administrators. There is no need to change any settings on this page, unless you would like to give additional IAM users or roles administrative permissions to the key. Click the <em>**Next**</em> button to continue:
 
-![Define key administrative permissions](images/5-create-key.png)
+ ![Define key administrative permissions](images/5-create-key.png)
 
-10. This page is where you can define additional IAM users or roles that have key usage permissions. There is no need to change any settings on this page, unless you would like to give additional IAM users or roles usage permissions for the key. Click the <em>**Next**</em> button to continue:
+ 10. This page is where you can define additional IAM users or roles that have key usage permissions. There is no need to change any settings on this page, unless you would like to give additional IAM users or roles usage permissions for the key. Click the <em>**Next**</em> button to continue:
 
-![Define key usage permissions](images/6-create-key.png)
+ ![Define key usage permissions](images/6-create-key.png)
 
-11. Click <em>**Next**</em> to accept the default key policy, which only grants access to the root user. We'll edit this policy later to give the Serverless application rights to sign with the key.
+ 11. Click <em>**Next**</em> to accept the default key policy, which only grants access to the root user. We'll edit this policy later to give the Serverless application rights to sign with the key.
 
  ![Review and edit key policy](images/7-create-key.png)
 
