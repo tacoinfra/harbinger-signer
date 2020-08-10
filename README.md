@@ -63,6 +63,10 @@ In order to setup the Serverless application, you'll need to perform the followi
 
  ![Create parameter](images/12-systems-manager.png)
 
+## Coinbase Pro API Key Setup
+
+The following steps are only required if you are planning on using the Coinbase Pro API as a price data provider. Binance doesn't require creating an API key to view their price data. If you are using Binance, please edit the `serverless.yml` file and change lines 67-68 to specify `BINANCE` as your `candleProvider`, then skip to step 25.
+
  17. Access your [Coinbase Pro API key settings](https://pro.coinbase.com/profile/api) either with the [link](https://pro.coinbase.com/profile/api) or by accessing your profile menu in the top right:
 
  ![Pro API Settings](images/pro-api-key-1.png)
@@ -92,6 +96,8 @@ In order to setup the Serverless application, you'll need to perform the followi
  ![Create Parameter](images/13-systems-manager.png)
 
  24. Create two more parameters, one named `/tezos/testnet-pro-api-passphrase` or `/tezos/mainnet-pro-api-passphrase` and the second one named `/tezos/testnet-pro-api-secret` or `/tezos/mainnet-pro-api-secret` with the values that you saved previously in steps 19 and 21. These should both be of type `SecureString` as well.
+
+## Deploying the Serverless Application
 
  25. Clone this repository to your local system, install all NPM dependencies by typing `npm i` inside the repository directory, then type `sls deploy` to deploy the application. If all goes well, you should see output similar to this. You'll want to save the two endpoints for use later.
 
