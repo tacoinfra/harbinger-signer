@@ -29,7 +29,6 @@ provider:
     # The service which provides candles.
     # This value must be either "COINBASE" or "BINANCE". See the README for information about
     # how to wire custom feed providers.
-    # TODO(keefertaylor): Provide this documentation.
     CANDLE_PROVIDER:  ${self:custom.candleProvider.${self:provider.stage}}
 
     # Only used if CANDLE_PROVIDER is "COINBASE"
