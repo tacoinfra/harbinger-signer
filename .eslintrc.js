@@ -42,9 +42,8 @@ module.exports = {
         'plugin:import/warnings',
         'plugin:import/typescript',
 
-        // Add Airbnb + TypeScript support
-        'airbnb-base',
-        'airbnb-typescript/base',
+        // Add rules for Mocha-specific syntax
+        'plugin:mocha/recommended',
 
         // Add rules that specifically require type information using our tsconfig
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -54,22 +53,11 @@ module.exports = {
         'plugin:prettier/recommended',
     ],
 
-    rules: {
-        // Allow logging
-        'no-console': 'off',
-
-        // https://eslint.org/docs/rules/no-underscore-dangle
-        'no-underscore-dangle': [
-            'warn',
-            {
-                allow: [],
-                allowAfterThis: false,
-                allowAfterSuper: false,
-                allowAfterThisConstructor: false,
-                enforceInMethodNames: true,
-            },
-        ],
-    },
+    // rules: {
+    //   // This rule is about explicitly using `return undefined` when a function returns any non-undefined object.
+    //   // However, since we're using TypeScript, it will yell at us if a function is not allowed to return `undefined` in its signature, so we don't need this rule.
+    //   "consistent-return": "off",
+    // },
 
     overrides: [
         // Overrides for all test files
@@ -94,7 +82,14 @@ module.exports = {
                     'error',
                     { argsIgnorePattern: '^_' },
                 ],
+
+                // Allow us to import computed values for GRPC package definitions
+                'import/namespace': [2, { allowComputed: true }],
+
+                // These rules are deprecated, but we have an old config that enables it
+                '@typescript-eslint/camelcase': 'off',
+                '@typescript-eslint/ban-ts-ignore': 'off',
             },
         },
     ],
-} 
+}
