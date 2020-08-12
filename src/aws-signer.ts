@@ -31,9 +31,7 @@ export default class AwsSigner implements Signer {
      * @returns A base58check encoded signature.
      */
     public async sign(bytes: Uint8Array): Promise<string> {
-        const signedBytes = await this.wrappedSigner.signOperation(
-            Buffer.from(bytes),
-        )
+        const signedBytes = await this.wrappedSigner.signOperation(Buffer.from(bytes))
         return Utils.base58CheckEncode(signedBytes, Prefixes.secp256k1signature)
     }
 
