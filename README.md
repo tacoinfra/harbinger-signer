@@ -172,4 +172,4 @@ An object conforming to the [`CandleProvider`](https://github.com/tacoinfra/harb
 
 An object conforming to the [`Signer`]() interface can sign bytes and provide a public key. [`Signer`s are injected into `OracleService` via constructor](https://github.com/tacoinfra/harbinger-signer/blob/dfd677ec8724b03483e65ac156a2213e22d771a0/handler.ts#L89). 
 
-`Harbinger-Signer` has one signer built in, [`AwsSigner`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/aws-signer.ts) which wraps calls to an [AWS KMS Service]().
+`Harbinger-Signer` has one signer built in, [`AwsSigner`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/aws-signer.ts) which wraps calls to an [AWS KMS Service](https://aws.amazon.com/kms/).
