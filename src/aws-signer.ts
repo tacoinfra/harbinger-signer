@@ -1,8 +1,5 @@
 import Signer from './signer'
-import { AwsKmsKeyStore, AwsKmsSigner, Utils } from '@tacoinfra/harbinger-lib'
-
-// TODO(keefertaylor): Centralize this.
-const SIGNATURE_WATERMARK = new Uint8Array([13, 115, 101, 19, 63]) // spsig
+import { AwsKmsKeyStore, AwsKmsSigner, Prefixes, Utils } from '@tacoinfra/harbinger-lib'
 
 /** Provides signing capabilities from AWS KMS. */
 export default class AwsSigner implements Signer {
@@ -32,7 +29,7 @@ export default class AwsSigner implements Signer {
      */
     public async sign(bytes: Uint8Array): Promise<string> {
         const signedBytes = await this.wrappedSigner.signOperation(Buffer.from(bytes))
-        return Utils.base58CheckEncode(signedBytes, SIGNATURE_WATERMARK)
+        return Utils.base58CheckEncode(signedBytes, Prefixes.secp256k1signature)
     }
 
     /**
