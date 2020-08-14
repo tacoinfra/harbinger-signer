@@ -1,5 +1,13 @@
 # Harbinger Serverless Price Feed Signer
 
+## About
+
+`harbinger-signer` is a signer for the Harbinger oracle system. The app is written in [Serverless]() and Typescript and can deploy to [AWS]() and sign via an HSM in the cloud with [AWS KMS Support].  To get started with Harbinger, visit the [main documentation](https://github.com/tacoinfra/harbinger).
+
+This repository contains a reference implementations for a feed from Binance's and from Coinbase's API. Signing is done via [AWS KMS](), an in cloud HSM. The app is extensible to produce feeds from other APIs and to use other signing solutions besides AWS KMS. See 'Customizing Functionality' below.
+
+This library provides functionality for signing a Harbinger price feed. Users interested in posting prices might also be interested in [Harbinger CLI]() and [Harbinger Poster] which provide a client side and hosted posting solution. Developers of new Harbinger components may be interested in [harbinger-lib]().
+
 ### Introduction
 
 The Harbinger Tezos price oracle consists of two main components:
@@ -149,3 +157,31 @@ Congratulations, you've just deployed a Serverless application that will automat
  If you get a `{"message": "Internal server error"}` instead, you should check your Lambda logs inside the AWS console to see what went wrong. Most likely you have either not created all of the Systems Manager parameters correctly or the KMS key policy is not 100% correct. You should see output like this:
 
  ![Info Output](images/info-output.png)
+
+## Customizing Functionality
+
+[`OracleService`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/oracle-service.ts) is a pluggable service that can handle all serverless requests for the signer. It is initialized with an object conforming to the [`Signer`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/signer.ts) interface, an object conforming to the [`CandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/candle-provider.ts) interface and a list of assets to sign.
+
+End users can customize this library with custom signers and candle providers.
+
+### Custom Assets
+
+An assets list is configured in [`serverless.yml`](https://github.com/tacoinfra/harbinger-signer/blob/master/serverless.yml#L60). This list can be customized to any set of assets.
+
+### Custom Candle Providers
+
+An object conforming to the [`CandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/candle-provider.ts) interface can retrieve `Candle` objects from an external feed. [`Candle Provider`s are injected into the `OracleService` via constructor](https://github.com/tacoinfra/harbinger-signer/blob/dfd677ec8724b03483e65ac156a2213e22d771a0/handler.ts#L89).
+
+`Harbinger-Signer` has two `CandleProvider`s built in:
+- [`BinanceCandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/binance-candle-provider.ts): Provides Candles from the Binance API.
+- [`CoinbaseCandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/coinbase-candle-provider.ts): Provides Candles from the Coinbase Pro API.
+
+### Custom Signers
+
+An object conforming to the [`Signer`]() interface can sign bytes and provide a public key. [`Signer`s are injected into `OracleService` via constructor](https://github.com/tacoinfra/harbinger-signer/blob/dfd677ec8724b03483e65ac156a2213e22d771a0/handler.ts#L89). 
+
+`Harbinger-Signer` has one signer built in, [`AwsSigner`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/aws-signer.ts) which wraps calls to an [AWS KMS Service](https://aws.amazon.com/kms/).
+
+## Credits
+
+Harbinger is written and maintained by [Luke Youngblood]() and [Keefer Taylor](). 
