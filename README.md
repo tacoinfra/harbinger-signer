@@ -1,5 +1,13 @@
 # Harbinger Serverless Price Feed Signer
 
+## About
+
+`harbinger-signer` is a signer for the Harbinger oracle system. The app is written in [Serverless]() and Typescript and can deploy to [AWS]() and sign via an HSM in the cloud with [AWS KMS Support].  To get started with Harbinger, visit the [main documentation](https://github.com/tacoinfra/harbinger).
+
+This repository contains a reference implementations for a feed from Binance's and from Coinbase's API. Signing is done via [AWS KMS](), an in cloud HSM. The app is extensible to produce feeds from other APIs and to use other signing solutions besides AWS KMS. See 'Customizing Functionality' below.
+
+This library provides functionality for signing a Harbinger price feed. Users interested in posting prices might also be interested in [Harbinger CLI]() and [Harbinger Poster] which provide a client side and hosted posting solution. Developers of new Harbinger components may be interested in [harbinger-lib]().
+
 ### Introduction
 
 The Harbinger Tezos price oracle consists of two main components:
@@ -173,3 +181,7 @@ An object conforming to the [`CandleProvider`](https://github.com/tacoinfra/harb
 An object conforming to the [`Signer`]() interface can sign bytes and provide a public key. [`Signer`s are injected into `OracleService` via constructor](https://github.com/tacoinfra/harbinger-signer/blob/dfd677ec8724b03483e65ac156a2213e22d771a0/handler.ts#L89). 
 
 `Harbinger-Signer` has one signer built in, [`AwsSigner`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/aws-signer.ts) which wraps calls to an [AWS KMS Service](https://aws.amazon.com/kms/).
+
+## Credits
+
+Harbinger is written and maintained by [Luke Youngblood]() and [Keefer Taylor](). 
