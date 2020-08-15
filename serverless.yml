@@ -61,7 +61,7 @@ custom:
     testnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
     mainnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
   # The service which provides candles.
-  # This value must be either "COINBASE" or "BINANCE". See the README for information about
+  # This value must be either "COINBASE", "GEMINI" or "BINANCE". See the README for information about
   # how to wire custom feed providers.
   candleProvider:
     testnet: "COINBASE"

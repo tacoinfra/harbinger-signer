@@ -9,6 +9,7 @@ import AwsSigner from './src/aws-signer'
 import HttpResponseCode from './src/http-response-code'
 import BinanceCandleProvider from './src/binance-candle-provider'
 import CoinbaseCandleProvider from './src/coinbase-candle-provider'
+import GeminiCandleProvider from './src/gemini-candle-provider'
 
 /** Handler for the Oracle Feed endpoint. */
 export const oracle: APIGatewayProxyHandler = async (_event, _context) => {
@@ -114,6 +115,8 @@ const getCandleProvider = () => {
     return getCoinbaseCandleProvider()
   } else if (candleProvider === 'BINANCE') {
     return getBinanceCandleProvider()
+  } else if (candleProvider === 'GEMINI') {
+    return getGeminiCandleProvider()
   } else {
     throw new Error(
       `Unknown CANDLE_PROVIDER passed in env var: ${JSON.stringify(
@@ -148,4 +151,9 @@ const getCoinbaseCandleProvider = () => {
 /** Helper function to return a `BinanceCandleProvider` */
 const getBinanceCandleProvider = () => {
   return new BinanceCandleProvider()
+}
+
+/** Helper function to return a `GeminiCandleProvider` */
+const getGeminiCandleProvider = () => {
+  return new GeminiCandleProvider()
 }
