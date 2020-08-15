@@ -9,7 +9,7 @@ import AwsSigner from './src/aws-signer'
 import HttpResponseCode from './src/http-response-code'
 import BinanceCandleProvider from './src/binance-candle-provider'
 import CoinbaseCandleProvider from './src/coinbase-candle-provider'
-import GeminiCandleProvider from 'gemini-candle-provider'
+import GeminiCandleProvider from './src/gemini-candle-provider'
 
 /** Handler for the Oracle Feed endpoint. */
 export const oracle: APIGatewayProxyHandler = async (_event, _context) => {

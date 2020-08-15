@@ -62,14 +62,9 @@ export default class GeminiCandleProvider implements CandleProvider {
     const candles: Array<Array<number>> = JSON.parse(response.content)
 
     // Grab and destructure the first candle, which is the most recent.
-    const [
-      startTimestamp,
-      open,
-      high,
-      low,
-      close,
-      volume,
-    ] = candles[candles.length - 1]
+    const [startTimestamp, open, high, low, close, volume] = candles[
+      candles.length - 1
+    ]
 
     // Return the data formatted as an {@link Candle}.
     return {
