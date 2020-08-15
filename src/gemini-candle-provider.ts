@@ -10,40 +10,40 @@ import { Utils } from '@tacoinfra/harbinger-lib'
 /** User agent for requests to the API. */
 const USER_AGENT = 'harbinger-signer'
 
-/** Granularity parameter for the Binance API. */
+/** Granularity parameter for the Gemini API. */
 const GRANULARITY = '1m'
 
-/** Binance REST API base URL */
-const BINANCE_API_BASE_URL = 'https://api.binance.com'
+/** Gemini REST API base URL */
+const GEMINI_API_BASE_URL = 'https://api.gemini.com/'
 
 /** Scale to report prices in. */
 const SCALE = 6
 
-/** Provides candles from the Binance API. */
-export default class BinanceCandleProvider implements CandleProvider {
+/** Provides candles from the Gemini API. */
+export default class GeminiCandleProvider implements CandleProvider {
   /**
    * Get a description of the CandleProvider's backing service.
    *
    * @returns A string describing where the candles are pulled from.
    */
   public getProviderName(): string {
-    return BINANCE_API_BASE_URL
+    return GEMINI_API_BASE_URL
   }
 
   /**
-   * Retrieves a candle from the Binance API.
+   * Retrieves a candle from the Gemini API.
    *
    * @param assetName The assetName to retrieve. For instance, "XTZ-USD".
    */
   public async getCandle(assetName: string): Promise<Candle> {
-    // Binance ommits dashes in their API.
+    // Gemini ommits dashes in their API.
     const normalizedAssetName = assetName.replace('-', '')
 
-    // Query the Binance API.
-    const requestPath = BinanceCandleProvider.makeRequestPath(
+    // Query the Gemini API.
+    const requestPath = GeminiCandleProvider.makeRequestPath(
       normalizedAssetName,
     )
-    const apiURL = BINANCE_API_BASE_URL + requestPath
+    const apiURL = GEMINI_API_BASE_URL + requestPath
 
     const response = await WebRequest.get(apiURL, {
       headers: {
@@ -69,15 +69,14 @@ export default class BinanceCandleProvider implements CandleProvider {
       low,
       close,
       volume,
-      endTimestamp,
     ] = candles[candles.length - 1]
 
     // Return the data formatted as an {@link Candle}.
     return {
       assetName,
-      // Binance uses milliseconds instead of microseconds.
+      // Gemini uses milliseconds instead of microseconds.
       startTimestamp: Math.round(startTimestamp / 1000),
-      endTimestamp: Math.round(endTimestamp / 1000),
+      endTimestamp: Math.round(startTimestamp / 1000) + 60,
       low: Utils.scale(low, SCALE),
       high: Utils.scale(high, SCALE),
       open: Utils.scale(open, SCALE),
@@ -87,12 +86,12 @@ export default class BinanceCandleProvider implements CandleProvider {
   }
 
   /**
-   * Make an request path for the given asset in the Binance API.
+   * Make an request path for the given asset in the Gemini API.
    *
    * @param assetName The assetName to retrieve. For instance, "BATUSDC".
    * @return The request path to hit.
    */
   private static makeRequestPath(assetName: string): string {
-    return `/api/v3/klines?symbol=${assetName}&interval=${GRANULARITY}`
+    return `/v2/candles/${assetName}/${GRANULARITY}`
   }
 }
