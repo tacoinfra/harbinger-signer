@@ -57,7 +57,7 @@ export default class BinanceCandleProvider implements CandleProvider {
       throw new Error(response.content)
     }
 
-    // Coinbase returns an array of arrays. The outer array contains many candles and
+    // Binance returns an array of arrays. The outer array contains many candles and
     // the inner array is the data for each candle.
     const candles: Array<Array<number>> = JSON.parse(response.content)
 

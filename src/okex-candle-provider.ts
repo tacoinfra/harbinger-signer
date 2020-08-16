@@ -10,45 +10,39 @@ import { Utils } from '@tacoinfra/harbinger-lib'
 /** User agent for requests to the API. */
 const USER_AGENT = 'harbinger-signer'
 
-/** Granularity parameter for the Gemini API. */
-const GRANULARITY = '1m'
+/** Granularity parameter for the OKEx API. */
+const GRANULARITY = '60'
 
-/** Gemini REST API base URL */
-const GEMINI_API_BASE_URL = 'https://api.gemini.com/'
+/** OKEx REST API base URL */
+const OKEX_API_BASE_URL = 'https://www.okex.com'
 
 /** Scale to report prices in. */
 const SCALE = 6
 
-/** Provides candles from the Gemini API. */
-export default class GeminiCandleProvider implements CandleProvider {
+/** Provides candles from the OKEx API. */
+export default class OkexCandleProvider implements CandleProvider {
   /**
    * Get a description of the CandleProvider's backing service.
    *
    * @returns A string describing where the candles are pulled from.
    */
   public getProviderName(): string {
-    return GEMINI_API_BASE_URL
+    return OKEX_API_BASE_URL
   }
 
   /**
-   * Retrieves a candle from the Gemini API.
+   * Retrieves a candle from the OKEx API.
    *
    * @param assetName The assetName to retrieve. For instance, "XTZ-USD".
    */
   public async getCandle(assetName: string): Promise<Candle> {
-    // Gemini ommits dashes in their API.
-    const normalizedAssetName = assetName.replace('-', '')
-
-    // Query the Gemini API.
-    const requestPath = GeminiCandleProvider.makeRequestPath(
-      normalizedAssetName,
-    )
-    const apiURL = GEMINI_API_BASE_URL + requestPath
+    // Query the Binance API.
+    const requestPath = OkexCandleProvider.makeRequestPath(assetName)
+    const apiURL = OKEX_API_BASE_URL + requestPath
 
     const response = await WebRequest.get(apiURL, {
       headers: {
         'User-Agent': USER_AGENT,
-        accept: 'json',
       },
     })
 
@@ -57,36 +51,39 @@ export default class GeminiCandleProvider implements CandleProvider {
       throw new Error(response.content)
     }
 
-    // Gemini returns an array of arrays. The outer array contains many candles and
+    // OKEx returns an array of arrays. The outer array contains many candles and
     // the inner array is the data for each candle.
-    const candles: Array<Array<number>> = JSON.parse(response.content)
+    const candles: Array<Array<string>> = JSON.parse(response.content)
 
     // Grab and destructure the first candle, which is the most recent.
-    const [startTimestamp, open, high, low, close, volume] = candles[
+    const [startTimeISO, open, high, low, close, volume] = candles[
       candles.length - 1
     ]
+
+    // Timestamp is returned as an ISO string, parse it to a unix timestamp.
+    const startTime = Date.parse(startTimeISO) / 1000
+    const endTime = startTime + 60
 
     // Return the data formatted as an {@link Candle}.
     return {
       assetName,
-      // Gemini uses milliseconds instead of microseconds.
-      startTimestamp: Math.round(startTimestamp / 1000),
-      endTimestamp: Math.round(startTimestamp / 1000) + 60,
-      low: Utils.scale(low, SCALE),
-      high: Utils.scale(high, SCALE),
-      open: Utils.scale(open, SCALE),
-      close: Utils.scale(close, SCALE),
-      volume: Utils.scale(volume, SCALE),
+      startTimestamp: startTime,
+      endTimestamp: endTime,
+      low: Utils.scale(parseFloat(low), SCALE),
+      high: Utils.scale(parseFloat(high), SCALE),
+      open: Utils.scale(parseFloat(open), SCALE),
+      close: Utils.scale(parseFloat(close), SCALE),
+      volume: Utils.scale(parseFloat(volume), SCALE),
     }
   }
 
   /**
-   * Make an request path for the given asset in the Gemini API.
+   * Make an request path for the given asset in the OKEx API.
    *
-   * @param assetName The assetName to retrieve. For instance, "BATUSDC".
+   * @param assetName The assetName to retrieve. For instance, "BTC-USD".
    * @return The request path to hit.
    */
   private static makeRequestPath(assetName: string): string {
-    return `/v2/candles/${assetName}/${GRANULARITY}`
+    return `/api/spot/v3/instruments/${assetName}/candles?granularity=${GRANULARITY}`
   }
 }
