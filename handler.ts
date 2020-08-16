@@ -1,3 +1,6 @@
+/** Disable to allow printing of error messages on arbitrarily thrown objects. */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import OracleService from './src/oracle-service'
 import { initOracleLib } from '@tacoinfra/harbinger-lib'
@@ -6,6 +9,7 @@ import AwsSigner from './src/aws-signer'
 import HttpResponseCode from './src/http-response-code'
 import BinanceCandleProvider from './src/binance-candle-provider'
 import CoinbaseCandleProvider from './src/coinbase-candle-provider'
+import GeminiCandleProvider from './src/gemini-candle-provider'
 
 /** Handler for the Oracle Feed endpoint. */
 export const oracle: APIGatewayProxyHandler = async (_event, _context) => {
@@ -22,7 +26,7 @@ export const oracle: APIGatewayProxyHandler = async (_event, _context) => {
 
     return {
       statusCode: HttpResponseCode.serverError,
-      body: "Error: " + exception.message
+      body: `Error: ${JSON.stringify(exception.message)}`,
     }
   }
 }
@@ -42,7 +46,7 @@ export const revoke: APIGatewayProxyHandler = async (_event, _context) => {
 
     return {
       statusCode: HttpResponseCode.serverError,
-      body: "Error: " + exception.message
+      body: `Error: ${JSON.stringify(exception.message)}`,
     }
   }
 }
@@ -52,7 +56,6 @@ export const info: APIGatewayProxyHandler = async (_event, _context) => {
   try {
     const oracleService = await getOracleService()
     const body = await oracleService.info()
-    console.log("body" + body)
 
     return {
       statusCode: HttpResponseCode.ok,
@@ -64,7 +67,7 @@ export const info: APIGatewayProxyHandler = async (_event, _context) => {
 
     return {
       statusCode: HttpResponseCode.serverError,
-      body: "Error: " + exception.message
+      body: `Error: ${JSON.stringify(exception.message)}`,
     }
   }
 }
@@ -76,7 +79,7 @@ const getOracleService = async () => {
   // Validate asset lists.
   const assetList = process.env.ASSETS
   if (assetList == undefined) {
-    throw new Error("No asset list defined. Please check your configuration")
+    throw new Error('No asset list defined. Please check your configuration')
   }
   const assets = assetList.split(',').sort()
 
@@ -95,11 +98,10 @@ const getOracleService = async () => {
 const getSigner = () => {
   const awsKmsKeyId = process.env.AWS_KMS_KEY_ID
   const awsKmsKeyRegion = process.env.AWS_KMS_KEY_REGION
-  if (
-    awsKmsKeyId === undefined ||
-    awsKmsKeyRegion === undefined
-  ) {
-    throw new Error("Fatal: Missing an input to create Signer. Please check your configuration.")
+  if (awsKmsKeyId === undefined || awsKmsKeyRegion === undefined) {
+    throw new Error(
+      'Fatal: Missing an input to create Signer. Please check your configuration.',
+    )
   }
 
   return AwsSigner.from(awsKmsKeyId, awsKmsKeyRegion)
@@ -109,12 +111,18 @@ const getSigner = () => {
 const getCandleProvider = () => {
   // Provide a candle provider based on the value of the CANDLE_PROVIDER env var.
   const candleProvider = process.env.CANDLE_PROVIDER
-  if (candleProvider === "COINBASE") {
+  if (candleProvider === 'COINBASE') {
     return getCoinbaseCandleProvider()
-  } else if (candleProvider === "BINANCE") {
+  } else if (candleProvider === 'BINANCE') {
     return getBinanceCandleProvider()
+  } else if (candleProvider === 'GEMINI') {
+    return getGeminiCandleProvider()
   } else {
-    throw new Error("Unknown CANDLE_PROVIDER passed in env var: " + candleProvider)
+    throw new Error(
+      `Unknown CANDLE_PROVIDER passed in env var: ${JSON.stringify(
+        candleProvider,
+      )}`,
+    )
   }
 }
 
@@ -128,13 +136,24 @@ const getCoinbaseCandleProvider = () => {
     coinbaseApiKeySecret === undefined ||
     coinbaseApiKeyPassphrase === undefined
   ) {
-    throw new Error("Fatal: Missing an input to create CandleProvider. Please check your configuration.")
+    throw new Error(
+      'Fatal: Missing an input to create CandleProvider. Please check your configuration.',
+    )
   }
 
-  return new CoinbaseCandleProvider(coinbaseApiKeyId, coinbaseApiKeySecret, coinbaseApiKeyPassphrase)
+  return new CoinbaseCandleProvider(
+    coinbaseApiKeyId,
+    coinbaseApiKeySecret,
+    coinbaseApiKeyPassphrase,
+  )
 }
 
 /** Helper function to return a `BinanceCandleProvider` */
 const getBinanceCandleProvider = () => {
   return new BinanceCandleProvider()
+}
+
+/** Helper function to return a `GeminiCandleProvider` */
+const getGeminiCandleProvider = () => {
+  return new GeminiCandleProvider()
 }
