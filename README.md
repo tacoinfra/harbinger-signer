@@ -14,8 +14,7 @@ The Harbinger Tezos price oracle consists of two main components:
 - A <em>**signer**</em> that retrieves price candles from an exchange and cryptographically signs them.
 - A <em>**poster**</em> that retrieves the signed price feed from a signer and sends the signed data to a smart contract on the Tezos network.
 
-This project is a reference price feed signer that demonstrates how to retrieve prices from multiple exchanges
-including Coinbase Pro, Binance, Gemini, and OKEx, and sign them with a private key that is securely stored inside [Amazon Key Management Service](https://aws.amazon.com/kms/). It is a [Serverless Framework](https://serverless.com) application. Once deployed, there is no need to spend any time thinking about or managing servers.
+This project is a reference price feed signer that demonstrates how to retrieve prices from multiple exchanges including Coinbase Pro, Binance, Gemini, and OKEx, and sign them with a private key that is securely stored inside [Amazon Key Management Service](https://aws.amazon.com/kms/). It is a [Serverless Framework](https://serverless.com) application. Once deployed, there is no need to spend any time thinking about or managing servers.
 
 ## Setup Instructions
 
