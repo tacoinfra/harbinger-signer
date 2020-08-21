@@ -69,9 +69,42 @@ export default class OracleService {
       }),
     )
 
+    // The timestamp field is the most up to date timestamp.
+    const timestamp = candles.reduce(
+      (previous, current) => {
+        const currentTimestamp = current.startTimestamp
+        return previous > currentTimestamp ? previous : currentTimestamp
+      },
+      0
+    )
+
+    // Create an object that contains human readable prices.
+    // First map each candle to an object that constains a mapping of asset name to price.
+    const prices = candles.map((candle: Candle) => {
+      const assetName = candle.assetName
+      
+      // TODO(keefertaylor): Refactor this to put Scale = 6 into harbinger-lib's constants and use
+      //                     harbinger-lib's Utils object to scale.
+      const priceNormalized = (candle.open + candle.close) / 2
+      const price = priceNormalized * Math.pow(10, -6)
+
+      // Typescript doesn't love objects.
+      const object: any = {}
+      object[`${assetName}`] = `${price}`
+      return object
+    // Then compress mappings to a single object.
+    }).reduce(
+      (previous, current) => {
+        return Object.assign(previous, current)
+      },
+      {}
+    )
+
     return {
+      timestamp,
       messages: packedCandles,
       signatures: signatures,
+      prices
     }
   }
 
