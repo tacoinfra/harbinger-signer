@@ -12,35 +12,35 @@ provider:
   name: aws
   runtime: nodejs12.x
   apiKeys:
-    - ${opt:stage,'testnet'}-signer
+    - ${opt:stage,'coinbase'}-signer
 
-  stage: ${opt:stage,'testnet'}
-  region: eu-west-1
+  stage: ${opt:stage,'coinbase'}
+  region: ${self:custom.awsKmsKeyRegion}
 
   # Environment Variables
   environment:
     # Credentials to access the AWS KMS service.
-    AWS_KMS_KEY_ID: ${ssm:${self:custom.awsKmsKeyId.${self:provider.stage}}~true}
-    AWS_KMS_KEY_REGION: ${self:custom.awsKmsKeyRegion.${self:provider.stage}}
+    AWS_KMS_KEY_ID: ${ssm:${self:custom.awsKmsKeyId}}
+    AWS_KMS_KEY_REGION: ${self:custom.awsKmsKeyRegion}
 
     # Assets to serve in the feed.
     ASSETS: ${self:custom.assets.${self:provider.stage}}
 
     # The service which provides candles.
-    # This value must be either "COINBASE" or "BINANCE". See the README for information about
-    # how to wire custom feed providers.
     CANDLE_PROVIDER:  ${self:custom.candleProvider.${self:provider.stage}}
 
     # Only used if CANDLE_PROVIDER is "COINBASE"
-    COINBASE_API_KEY_ID: ${ssm:${self:custom.coinbaseApiKeyId.${self:provider.stage}}~true}
-    COINBASE_API_KEY_SECRET: ${ssm:${self:custom.coinbaseApiKeySecret.${self:provider.stage}}~true}
-    COINBASE_API_KEY_PASSPHRASE: ${ssm:${self:custom.coinbaseApiKeyPassphrase.${self:provider.stage}}~true}
+    COINBASE_API_KEY_ID: ${ssm:${self:custom.coinbaseApiKeyId}~true}
+    COINBASE_API_KEY_SECRET: ${ssm:${self:custom.coinbaseApiKeySecret}~true}
+    COINBASE_API_KEY_PASSPHRASE: ${ssm:${self:custom.coinbaseApiKeyPassphrase}~true}
 
 # Custom Variables
 custom:
   stages:
-    - testnet
-    - mainnet
+    - coinbase
+    - binance
+    - gemini
+    - okex
   # Enable or disable caching globally
   apiGatewayCaching:
     enabled: true
@@ -48,40 +48,32 @@ custom:
     ttlInSeconds: 60 # defaults to the maximum allowed: 3600
     dataEncrypted: false # defaults to false
   # AWS KMS Key ID.
-  awsKmsKeyId:
-    testnet: "/tezos/testnet-kms-key-id"
-    mainnet: "/tezos/mainnet-kms-key-id"
+  awsKmsKeyId: "/tezos/signer-kms-key-id"
   # AWS Region where AWS KMS Key is located.
-  awsKmsKeyRegion:
-    testnet: "eu-west-1"
-    mainnet: "eu-west-1"
+  awsKmsKeyRegion: "eu-west-1"
   # Assets to update.
   assets:
-    # These testnet order books are all available on Coinbase Pro, feel free to add more
-    testnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
-    # These mainnet order books are all available on Binance, feel free to add more
-    mainnet: "BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT"
+    # These order books are all available on Coinbase Pro, feel free to add more
+    coinbase: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
+    # These order books are all available on Binance, feel free to add more
+    binance: "BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT"
+    # These order books are all available on Gemini, feel free to add more
+    gemini: "BTC-USD,ETH-USD,LINK-USD,DAI-USD,BAT-USD,OXT-USD,ZEC-USD,BCH-USD,LTC-USD"
+    # These order books are all available on OKEx, feel free to add more
+    okex: "BTC-USDT,ETH-USDT,LINK-USDT,XTZ-USDT,ATOM-USDT,CRV-USDT,BAL-USDT,SNX-USDT,KNC-USDT"
   # The service which provides candles.
-  # This value must be either "COINBASE", "GEMINI", "OKEX" or "BINANCE". See the README for information about
-  # how to wire custom feed providers.
+  # See the README for information about how to wire custom feed providers.
   candleProvider:
-    testnet: "COINBASE"
-    mainnet: "BINANCE"
-  # A Coinbase Pro API Key ID
-  # Only used if candleProvider is set to COINBASE.
-  coinbaseApiKeyId:
-    testnet: "/tezos/testnet-pro-api-key"
-    mainnet: "/tezos/mainnet-pro-api-key"
-  # A Coinbase Pro API Key Secret
-  # Only used if candleProvider is set to COINBASE.
-  coinbaseApiKeySecret:
-    testnet: "/tezos/testnet-pro-api-secret"
-    mainnet: "/tezos/mainnet-pro-api-secret"
-  # A Coinbase Pro API Key Passphase
-  # Only used if candleProvider is set to COINBASE.
-  coinbaseApiKeyPassphrase:
-    testnet: "/tezos/testnet-pro-api-passphrase"
-    mainnet: "/tezos/mainnet-pro-api-passphrase"
+    coinbase: "COINBASE"
+    binance: "BINANCE"
+    gemini: "GEMINI"
+    okex: "OKEX"
+  # A Coinbase Pro API Key ID - only used if candleProvider is set to COINBASE.
+  coinbaseApiKeyId: "/tezos/coinbase-pro-api-key"
+  # A Coinbase Pro API Key Secret - only used if candleProvider is set to COINBASE.
+  coinbaseApiKeySecret: "/tezos/coinbase-pro-api-secret"
+  # A Coinbase Pro API Key Passphase - only used if candleProvider is set to COINBASE.
+  coinbaseApiKeyPassphrase: "/tezos/coinbase-pro-api-passphrase"
 
 # Functions
 functions:
