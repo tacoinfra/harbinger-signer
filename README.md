@@ -127,7 +127,7 @@ The following steps are only required if you are planning on using the Coinbase 
             "Sid": "Allow use of the key for digital signing",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::{{ AWS Account ID }}:role/harbinger-signer-{{ coinbase/binance/gemini/okex }}-{{ AWS Region }}-lambdaRole"
+                "AWS": "arn:aws:iam::{{ AWS Account ID }}:role/harbinger-signer-{{ Exchange }}-{{ AWS Region }}-lambdaRole"
             },
             "Action": [
                 "kms:Sign",
@@ -139,8 +139,8 @@ The following steps are only required if you are planning on using the Coinbase 
  ```
 
  **Important Note:** You must replace the 3 sections of the JSON in each statement that have `{{ }}` (double curly braces) surrounding them with the appropriate information. This string should also have no spaces in it.
-  * **AWS Account ID** - This is your 12-digit numeric AWS account ID
-  * **coinbase/binance/gemini/okex** - This is the string `coinbase`, `binance`, `gemini`, or `okex` (all lower case) depending on which signer you are deploying
+  * **AWS Account ID** - This is your 12-digit numeric AWS account ID. If you're not sure what it is, look at the `root` policy above the one we are adding, and you should be able to copy it from that ARN
+  * **Exchange** - This is the string `coinbase`, `binance`, `gemini`, or `okex` (all lower case) depending on which signer you are deploying
   * **Region** - This is the AWS region you are deploying to, such as `eu-west-1`
 
  ![Edit Key Policy](images/18-edit-key-policy.png)
