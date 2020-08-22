@@ -67,13 +67,13 @@ In order to setup the Serverless application, you'll need to perform the followi
 
  ![Create parameter](images/11-systems-manager.png)
 
- 16. Name the parameter `/tezos/testnet-kms-key-id` or `/tezos/mainnet-kms-key-id` depending on which one you are deploying, and give it an optional description. Leave the other settings at default (Standard tier, String type, Data type text), and paste or enter the KMS key ID you saved in step 13 as the value, without quotes or any surrounding characters, then click the <em>**Create parameter**</em> button:
+ 16. Name the parameter `/tezos/signer-kms-key-id` and give it an optional description. Leave the other settings at default (Standard tier, String type, Data type text), and paste or enter the KMS key ID you saved in step 13 as the value, without quotes or any surrounding characters, then click the <em>**Create parameter**</em> button:
 
  ![Create parameter](images/12-systems-manager.png)
 
 ## Coinbase Pro API Key Setup
 
-The following steps are only required if you are planning on using the Coinbase Pro API as a price data provider. Binance doesn't require creating an API key to view their price data. If you are using Binance, please edit the `serverless.yml` file and change lines 67-68 to specify `BINANCE` as your `candleProvider`, then skip to step 25.
+The following steps are only required if you are planning on using the Coinbase Pro API as a price data provider. Other exchanges don't currently require creating an API key to view their price data. If you are using another exchange besides Coinbase Pro, skip to step 25.
 
  17. Access your [Coinbase Pro API key settings](https://pro.coinbase.com/profile/api) either with the [link](https://pro.coinbase.com/profile/api) or by accessing your profile menu in the top right:
 
@@ -99,15 +99,15 @@ The following steps are only required if you are planning on using the Coinbase 
 
  ![Copy API Key](images/pro-api-key-6.png) 
 
- 23. Create another parameter named `/tezos/testnet-pro-api-key` or `/tezos/mainnet-pro-api-key` depending on which one you are deploying, and give it an optional description. This parameter should be of type `SecureString`, but you can leave the rest of the settings at their defaults, and input your Coinbase Pro API key (with view permissions) as the value, then click the <em>**Create parameter**</em> button:
+ 23. Create another parameter named `/tezos/coinbase-pro-api-key` and give it an optional description. This parameter should be of type `SecureString`, but you can leave the rest of the settings at their defaults, and input your Coinbase Pro API key (with view permissions) as the value, then click the <em>**Create parameter**</em> button:
 
  ![Create Parameter](images/13-systems-manager.png)
 
- 24. Create two more parameters, one named `/tezos/testnet-pro-api-passphrase` or `/tezos/mainnet-pro-api-passphrase` and the second one named `/tezos/testnet-pro-api-secret` or `/tezos/mainnet-pro-api-secret` with the values that you saved previously in steps 19 and 21. These should both be of type `SecureString` as well.
+ 24. Create two more parameters, one named `/tezos/coinbase-pro-api-passphrase` and the second one named `/tezos/coinbase-pro-api-secret` with the values that you saved previously in steps 19 and 21. These should both be of type `SecureString` as well.
 
 ## Deploying the Serverless Application
 
- 25. Clone this repository to your local system, install all NPM dependencies by typing `npm i` inside the repository directory, then type `sls deploy` to deploy the application. If all goes well, you should see output similar to this. You'll want to save the two endpoints for use later.
+ 25. Clone this repository to your local system, install all NPM dependencies by typing `npm i` inside the repository directory, then type `sls deploy --stage {{ stage }}` (where stage is `coinbase`, `binance`, `gemini`, or `okex`) to deploy the application. If all goes well, you should see output similar to this. You'll want to save the two endpoints for use later.
 
  ![Serverless Deploy](images/15-sls-deploy.png)
 
@@ -127,7 +127,7 @@ The following steps are only required if you are planning on using the Coinbase 
             "Sid": "Allow use of the key for digital signing",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::{{ AWS Account ID }}:role/harbinger-signer-{{ testnet/mainnet }}-{{ AWS Region }}-lambdaRole"
+                "AWS": "arn:aws:iam::{{ AWS Account ID }}:role/harbinger-signer-{{ coinbase/binance/gemini/okex }}-{{ AWS Region }}-lambdaRole"
             },
             "Action": [
                 "kms:Sign",
@@ -140,7 +140,7 @@ The following steps are only required if you are planning on using the Coinbase 
 
  **Important Note:** You must replace the 3 sections of the JSON in each statement that have `{{ }}` (double curly braces) surrounding them with the appropriate information. This string should also have no spaces in it.
   * **AWS Account ID** - This is your 12-digit numeric AWS account ID
-  * **Testnet/Mainnet** - This is the string `testnet` or `mainnet` (all lower case) depending on what you are deploying
+  * **coinbase/binance/gemini/okex** - This is the string `coinbase`, `binance`, `gemini`, or `okex` (all lower case) depending on which signer you are deploying
   * **Region** - This is the AWS region you are deploying to, such as `eu-west-1`
 
  ![Edit Key Policy](images/18-edit-key-policy.png)
@@ -151,7 +151,7 @@ Congratulations, you've just deployed a Serverless application that will automat
 
  1. Curl the `info` endpoint that is displayed when you ran the last step (`sls deploy`) and it should output the `sppk...` address. You will need to include an `x-api-key` header that is set to the API key that was output by the previous `sls deploy` command. Here is the full command:
  ```
- curl --silent -H 'x-api-key: {{ your API key }}' https://{{ your API gateway }}.execute-api.eu-west-1.amazonaws.com/testnet/info
+ curl --silent -H 'x-api-key: {{ your API key }}' https://{{ your API gateway }}.execute-api.eu-west-1.amazonaws.com/binance/info
  ```
 
  If you get a `{"message": "Internal server error"}` instead, you should check your Lambda logs inside the AWS console to see what went wrong. Most likely you have either not created all of the Systems Manager parameters correctly or the KMS key policy is not 100% correct. You should see output like this:
