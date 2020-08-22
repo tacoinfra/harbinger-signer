@@ -56,9 +56,11 @@ custom:
     testnet: "eu-west-1"
     mainnet: "eu-west-1"
   # Assets to update.
-  assets:        
+  assets:
+    # These testnet order books are all available on Coinbase Pro, feel free to add more
     testnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
-    mainnet: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
+    # These mainnet order books are all available on Binance, feel free to add more
+    mainnet: "BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT"
   # The service which provides candles.
   # This value must be either "COINBASE", "GEMINI", "OKEX" or "BINANCE". See the README for information about
   # how to wire custom feed providers.
