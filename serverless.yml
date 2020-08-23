@@ -57,7 +57,7 @@ custom:
     # These order books are all available on Coinbase Pro, feel free to add more
     coinbase: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
     # These order books are all available on Binance, feel free to add more
-    binance: "BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT"
+    binance: "BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT,CRV-USDT,BAL-USDT,SNX-USDT"
     # These order books are all available on Gemini, feel free to add more
     gemini: "BTC-USD,ETH-USD,LINK-USD,DAI-USD,BAT-USD,OXT-USD,ZEC-USD,BCH-USD,LTC-USD"
     # These order books are all available on OKEx, feel free to add more
