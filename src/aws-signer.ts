@@ -1,10 +1,9 @@
 import Signer from './signer'
 import {
-  AwsKmsKeyStore,
-  AwsKmsSigner,
   Prefixes,
   Utils,
 } from '@tacoinfra/harbinger-lib'
+import { KmsKeyStore, KmsSigner } from '@tacoinfra/conseil-kms'
 
 /** Provides signing capabilities from AWS KMS. */
 export default class AwsSigner implements Signer {
@@ -18,15 +17,15 @@ export default class AwsSigner implements Signer {
     kmsKeyId: string,
     region: string,
   ): Promise<AwsSigner> {
-    const keystore = await AwsKmsKeyStore.from(kmsKeyId, region)
-    const signer = new AwsKmsSigner(kmsKeyId, region)
+    const keystore = await KmsKeyStore.from(kmsKeyId, region)
+    const signer = new KmsSigner(kmsKeyId, region)
     return new AwsSigner(signer, keystore)
   }
 
   /** Private constructor. Please use the static `from` method. */
   private constructor(
-    private readonly wrappedSigner: AwsKmsSigner,
-    private readonly wrappedKeystore: AwsKmsKeyStore,
+    private readonly wrappedSigner: KmsSigner,
+    private readonly wrappedKeystore: KmsKeyStore,
   ) {}
 
   /**
