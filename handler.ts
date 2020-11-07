@@ -10,6 +10,7 @@ import HttpResponseCode from './src/http-response-code'
 import BinanceCandleProvider from './src/binance-candle-provider'
 import CoinbaseCandleProvider from './src/coinbase-candle-provider'
 import GeminiCandleProvider from './src/gemini-candle-provider'
+import KrakenCandleProvider from './src/kraken-candle-provider'
 import OkexCandleProvider from './src/okex-candle-provider'
 
 /** Handler for the Oracle Feed endpoint. */
@@ -120,6 +121,8 @@ const getCandleProvider = () => {
     return getGeminiCandleProvider()
   } else if (candleProvider === 'OKEX') {
     return getOkexCandleProvider()
+  } else if (candleProvider === 'KRAKEN') {
+    return getKrakenCandleProvider()
   } else {
     throw new Error(
       `Unknown CANDLE_PROVIDER passed in env var: ${JSON.stringify(
@@ -164,4 +167,9 @@ const getGeminiCandleProvider = () => {
 /** Helper function to return an `OkexCandleProvider` */
 const getOkexCandleProvider = () => {
   return new OkexCandleProvider()
+}
+
+/** Helper function to return an `KrakenCandleProvider` */
+const getKrakenCandleProvider = () => {
+  return new KrakenCandleProvider()
 }
