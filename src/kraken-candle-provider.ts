@@ -10,6 +10,9 @@ import { Utils } from '@tacoinfra/harbinger-lib'
 /** User agent for requests to the API. */
 const USER_AGENT = 'harbinger-signer'
 
+/** Granularity parameter for the Kraken API. */
+const GRANULARITY = '60'
+
 /** Kraken REST API base URL */
 const KRAKEN_API_BASE_URL = 'https://api.kraken.com/0/public/Ticker'
 
@@ -40,7 +43,7 @@ export default class KrakenCandleProvider implements CandleProvider {
     const apiURL = KRAKEN_API_BASE_URL
 
     const response = await WebRequest.get(apiURL, {
-      body: { pair: normalizedAssetName },
+      body: { pair: normalizedAssetName, interval: GRANULARITY },
       headers: {
         'User-Agent': USER_AGENT,
         accept: 'json',
