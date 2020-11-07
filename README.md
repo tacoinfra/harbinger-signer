@@ -177,6 +177,7 @@ An object conforming to the [`CandleProvider`](https://github.com/tacoinfra/harb
 - [`CoinbaseCandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/coinbase-candle-provider.ts): Provides candles from the Coinbase Pro API.
 - [`GeminiCandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/gemini-candle-provider.ts): Provides candles from the Gemini API.
 - [`OkexCandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/okex-candle-provider.ts): Provides candles from the OKEx API.
+- [`KrakenCandleProvider`](https://github.com/tacoinfra/harbinger-signer/blob/master/src/kraken-candle-provider.ts): Provides candles from the OKEx API.
 
 ### Custom Signers
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /** Network responses are untyped. Disable some linting rules to accomodate. */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
@@ -14,7 +15,7 @@ const USER_AGENT = 'harbinger-signer'
 const GRANULARITY = '60'
 
 /** Kraken REST API base URL */
-const KRAKEN_API_BASE_URL = 'https://api.kraken.com/0/public/Ticker'
+const KRAKEN_API_BASE_URL = 'https://api.kraken.com/0/public/OHLC'
 
 /** Scale to report prices in. */
 const SCALE = 6
@@ -42,12 +43,16 @@ export default class KrakenCandleProvider implements CandleProvider {
     // Query the Kraken API.
     const apiURL = KRAKEN_API_BASE_URL
 
-    const response = await WebRequest.get(apiURL, {
-      body: { pair: normalizedAssetName, interval: GRANULARITY },
+    const response = await WebRequest.post(apiURL, {
       headers: {
         'User-Agent': USER_AGENT,
         accept: 'json',
+        'content-type': 'application/json',
       },
+      body: JSON.stringify({
+        pair: normalizedAssetName,
+        interval: GRANULARITY,
+      }),
     })
 
     // Throw an error if API returned something other than a 200.
@@ -71,7 +76,9 @@ export default class KrakenCandleProvider implements CandleProvider {
     //     <pair_name> = pair name
     //     array of array entries(<time>, <open>, <high>, <low>, <close>, <vwap>, <volume>, <count>)
 
-    const candles: Array<Array<number>> = JSON.parse(response.content)
+    const candleGroup = JSON.parse(response.content)
+    const candles: Array<Array<number>> =
+      candleGroup['result'][normalizedAssetName]
 
     // Grab and destructure the first candle, which is the most recent.
     const candleArray = candles[candles.length - 1]
@@ -85,9 +92,8 @@ export default class KrakenCandleProvider implements CandleProvider {
     // Return the data formatted as an {@link Candle}.
     return {
       assetName,
-      // Kraken uses milliseconds instead of microseconds.
-      startTimestamp: Math.round(startTimestamp / 1000),
-      endTimestamp: Math.round(startTimestamp / 1000) + 60,
+      startTimestamp: Math.round(startTimestamp),
+      endTimestamp: Math.round(startTimestamp) + 60,
       low: Utils.scale(low, SCALE),
       high: Utils.scale(high, SCALE),
       open: Utils.scale(open, SCALE),
