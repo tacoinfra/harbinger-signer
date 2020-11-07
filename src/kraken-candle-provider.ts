@@ -15,7 +15,7 @@ const USER_AGENT = 'harbinger-signer'
 const GRANULARITY = '60'
 
 /** Kraken REST API base URL */
-const KRAKEN_API_BASE_URL = 'https://api.kraken.com/0/public/OHLC'
+const KRAKEN_API_BASE_URL = 'https://api.kraken.com'
 
 /** Scale to report prices in. */
 const SCALE = 6
@@ -41,7 +41,10 @@ export default class KrakenCandleProvider implements CandleProvider {
     const normalizedAssetName = assetName.replace('-', '')
 
     // Query the Kraken API.
-    const apiURL = KRAKEN_API_BASE_URL
+    const requestPath = KrakenCandleProvider.makeRequestPath(
+      normalizedAssetName,
+    )
+    const apiURL = KRAKEN_API_BASE_URL + requestPath
 
     const response = await WebRequest.post(apiURL, {
       headers: {
@@ -49,10 +52,6 @@ export default class KrakenCandleProvider implements CandleProvider {
         accept: 'json',
         'content-type': 'application/json',
       },
-      body: JSON.stringify({
-        pair: normalizedAssetName,
-        interval: GRANULARITY,
-      }),
     })
 
     // Throw an error if API returned something other than a 200.
@@ -60,22 +59,8 @@ export default class KrakenCandleProvider implements CandleProvider {
       throw new Error(response.content)
     }
 
-    // Krakens returns an object with Key/Value pairs for the pair.
-    // [
-    //     [
-    //       1604696040,
-    //       '1.7196',
-    //       '1.7196',
-    //       '1.7196',
-    //       '1.7196',
-    //       '0.0000',
-    //       '0.00000000',
-    //       0
-    //     ],
-    // ]
-    //     <pair_name> = pair name
-    //     array of array entries(<time>, <open>, <high>, <low>, <close>, <vwap>, <volume>, <count>)
-
+    // Kraken returns an array of arrays. The outer array contains many candles and
+    // the inner array is the data for each candle.
     const candleGroup = JSON.parse(response.content)
     const candles: Array<Array<number>> =
       candleGroup['result'][normalizedAssetName]
@@ -100,5 +85,15 @@ export default class KrakenCandleProvider implements CandleProvider {
       close: Utils.scale(close, SCALE),
       volume: Utils.scale(volume, SCALE),
     }
+  }
+
+  /**
+   * Make an request path for the given asset in the Gemini API.
+   *
+   * @param assetName The assetName to retrieve. For instance, "BATUSDC".
+   * @return The request path to hit.
+   */
+  private static makeRequestPath(assetName: string): string {
+    return `/0/public/OHLC?pair=${assetName}&interval=${GRANULARITY}`
   }
 }
