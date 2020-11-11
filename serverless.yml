@@ -30,7 +30,7 @@ provider:
     ASSETS: ${self:custom.assets.${self:provider.stage}}
 
     # The service which provides candles.
-    CANDLE_PROVIDER:  ${self:custom.candleProvider.${self:provider.stage}}
+    CANDLE_PROVIDER: ${self:custom.candleProvider.${self:provider.stage}}
 
     # Only used if CANDLE_PROVIDER is "COINBASE"
     COINBASE_API_KEY_ID: ${ssm:${self:custom.coinbaseApiKeyId}~true}
@@ -44,6 +44,7 @@ custom:
     - binance
     - gemini
     - okex
+    - kraken
   # Enable or disable caching globally
   apiGatewayCaching:
     enabled: true
@@ -51,32 +52,35 @@ custom:
     ttlInSeconds: 60 # defaults to the maximum allowed: 3600
     dataEncrypted: false # defaults to false
   # AWS KMS Key ID.
-  awsKmsKeyId: "/tezos/signer-kms-key-id"
+  awsKmsKeyId: '/tezos/signer-kms-key-id'
   # AWS Region where AWS KMS Key is located.
-  awsKmsKeyRegion: "eu-west-1"
+  awsKmsKeyRegion: 'eu-west-1'
   # Assets to update.
   assets:
     # These order books are all available on Coinbase Pro, feel free to add more
-    coinbase: "BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD"
+    coinbase: 'BAT-USDC,BTC-USD,COMP-USD,DAI-USDC,ETH-USD,KNC-USD,LINK-USD,REP-USD,XTZ-USD,ZRX-USD'
     # These order books are all available on Binance, feel free to add more
-    binance: "BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT,CRV-USDT,BAL-USDT,SNX-USDT"
+    binance: 'BAT-USDT,BTC-USDT,COMP-USDT,DAI-USDT,ETH-USDT,KNC-USDT,LINK-USDT,REP-USDT,XTZ-USDT,ZRX-USDT,CRV-USDT,BAL-USDT,SNX-USDT'
     # These order books are all available on Gemini, feel free to add more
-    gemini: "BTC-USD,ETH-USD,LINK-USD,DAI-USD,BAT-USD,OXT-USD,ZEC-USD,BCH-USD,LTC-USD"
+    gemini: 'BTC-USD,ETH-USD,LINK-USD,DAI-USD,BAT-USD,OXT-USD,ZEC-USD,BCH-USD,LTC-USD'
     # These order books are all available on OKEx, feel free to add more
-    okex: "BTC-USDT,ETH-USDT,LINK-USDT,XTZ-USDT,ATOM-USDT,CRV-USDT,BAL-USDT,SNX-USDT,KNC-USDT"
+    okex: 'BTC-USDT,ETH-USDT,LINK-USDT,XTZ-USDT,ATOM-USDT,CRV-USDT,BAL-USDT,SNX-USDT,KNC-USDT'
+    # These order books are all available on Kraken, feel free to add more
+    kraken: 'XBT-USDT,ETH-USDT,LINK-USDT,XTZ-USD,XTZ-EUR,ATOM-USD,CRV-USD,BAL-USD,SNX-USD,KNC-USD'
   # The service which provides candles.
   # See the README for information about how to wire custom feed providers.
   candleProvider:
-    coinbase: "COINBASE"
-    binance: "BINANCE"
-    gemini: "GEMINI"
-    okex: "OKEX"
+    coinbase: 'COINBASE'
+    binance: 'BINANCE'
+    gemini: 'GEMINI'
+    okex: 'OKEX'
+    kraken: 'KRAKEN'
   # A Coinbase Pro API Key ID - only used if candleProvider is set to COINBASE.
-  coinbaseApiKeyId: "/tezos/coinbase-pro-api-key"
+  coinbaseApiKeyId: '/tezos/coinbase-pro-api-key'
   # A Coinbase Pro API Key Secret - only used if candleProvider is set to COINBASE.
-  coinbaseApiKeySecret: "/tezos/coinbase-pro-api-secret"
+  coinbaseApiKeySecret: '/tezos/coinbase-pro-api-secret'
   # A Coinbase Pro API Key Passphase - only used if candleProvider is set to COINBASE.
-  coinbaseApiKeyPassphrase: "/tezos/coinbase-pro-api-passphrase"
+  coinbaseApiKeyPassphrase: '/tezos/coinbase-pro-api-passphrase'
 
 # Functions
 functions:
@@ -91,7 +95,7 @@ functions:
           caching:
             enabled: true
             ttlInSeconds: 60
-          
+
   revoke:
     handler: handler.revoke
     events:
